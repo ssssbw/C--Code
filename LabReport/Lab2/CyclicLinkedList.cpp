@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define TRUE  1
+#define FALSE 0
+#define OK    1
+#define ERROR 0
+
 typedef struct List
 {
     int data;
@@ -22,6 +27,94 @@ LinkList delete_Elem(LinkList headNode, int min_k, int max_k);
 void split_List(LinkList headNode, LinkList oddList, LinkList evenList);
 void print_List(LinkList headNode);
 
+LinkList init_List()
+{
+    LinkList headNode;
+    headNode = (LinkList)malloc(sizeof(LinkList));
+    if(!headNode) return ERROR;
+    headNode->next = headNode;
+    return headNode;
+}
+
+LinkList create_List(LinkList headNode)
+{
+    LinkList rear;
+    int num;
+    printf("请输入元素个数: ");
+    scanf("%d", &num);
+    while (num)
+    {
+        rear = (LinkList)malloc(sizeof(LinkList));
+        scanf("%d", &rear->data);
+        rear->next = headNode->next;
+        headNode->next = rear; 
+        num--;
+    }
+    return headNode;
+}
+
+LinkList delete_Elem(LinkList headNode, int min_k, int max_k)
+{
+
+    LinkList front, rear, pre;
+    pre = headNode;
+    front = headNode->next;
+    while (front != headNode)
+    {
+        if (front->data > min_k && front->data < max_k)
+        {
+            rear = front->next;
+            pre->next = front->next;
+            free(front);
+            front = rear;
+        }
+        else
+        {
+            pre = front;
+            front = front->next;
+        }
+    }
+    return headNode;
+}
+
+void divide_Odd_Even(LinkList List, LinkList ListEven)
+{
+	//init(ListEven);//初始化B，使其成为带有头结点的空指针,用于将来存放偶数
+	LinkList ListB = ListEven;//偶数链表的临时指针
+	while (List->next != NULL)
+	{
+		if (List->next->data % 2 == 0)//如果为偶数
+		{
+			LinkList temp = List->next;//记录下这个偶数的节点的地址
+			List->next = temp->next;//删除操作
+			List = List->next;//前进一格
+			ListB->next = temp;//将偶数节点接入ListB
+			ListB = temp;//临时指针移动到表尾，注意，此时表尾的next并不是指向NULL
+		}
+		else//如果是奇数
+		{
+			List = List->next;//前进一格
+		}
+		if (List == NULL)//如果最后一个链表是偶数，则移动完链表后，因为要再前进一格，所以List为NULL，如果这个时候不结束循环，循环条件会爆炸
+		{
+			return;
+		}
+	}
+	ListB->next = NULL;
+}
+
+
+void print_List(LinkList headNode)
+{
+    LinkList node;
+    node = headNode->next;
+    while (node != headNode)
+    {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+}
+
 int main()
 {
     LinkList list, oddList, evenList;
@@ -30,7 +123,7 @@ int main()
     list = create_List(list);
     printf("L :");
     print_List(list);
-    printf("\n************************");
+    printf("\n************************\n");
 
     int min_k, max_k;
     printf("请输入要删除的元素范围: ");
@@ -38,13 +131,13 @@ int main()
     list = delete_Elem(list, min_k, max_k);
     printf("L :");
     print_List(list);
-    printf("\n************************");
+    printf("\n************************\n");
 
-    oddList = init_List();
+    // oddList = init_List();
     evenList = init_List();
-    split_List(list, oddList, evenList);
+    divide_Odd_Even(list, evenList);
     printf("L1 :");
-    print_List(oddList);
+    print_List(list);
     printf("\n************************");
     printf("L2 :");
     print_List(evenList);
