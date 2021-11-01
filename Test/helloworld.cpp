@@ -1,11 +1,15 @@
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
-
-int main()
-{
-    for (int i = 0; i < 5; i++)
-    {
-        cout << "Hello, World!" << endl;
-    }
-    return 0;
+int main() {
+	int a = 0;
+	cout << "今年是_年";
+	cin >> a;
+	
+	system("cls");
+	cout << "今年是" << a << "年";
+	system("pause");
+	
+	return 0;
 }
+
