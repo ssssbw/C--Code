@@ -2,16 +2,15 @@
 #include <stdlib.h>
 #include "Stack.h"
 
-void BracketMatch(const char *str,int size)
+void bracketMatch(const char *str,int size)
 {
 	Stack stack;
 	char ch;
 	char leftBracket;
 	int i = 0;
 	StackInit(&stack);
- 
- 
-	for (i=0;i<size;i++)
+
+	for (i = 0; i < size; i++)
 	{
 		ch = str[i];
  
@@ -20,7 +19,7 @@ void BracketMatch(const char *str,int size)
 		case '(':
 		case '[':
 		case '{':
-			StackPush(&stack,(DataType)ch);
+			StackPush(&stack,(ElemType)ch);
 			break;
 		case ')':
 		case ']':
@@ -63,23 +62,27 @@ void BracketMatch(const char *str,int size)
 	printf("匹配正常\n");
 }
 
-void TestBracket()
+void testBracketMatch(char expression[5][40])
 {
-	const char *seq[]={
-		"(())abc{[(])}",
-		"(()))abc{[]}",
-		"(()()abc{[]}",
-		"(())abc{[]()}"
-	};
 	int i = 0;
-	for (i=0;i<4;i++)
+	for (i=0;i<5;i++)
 	{
-		BracketMatch(seq[i],strlen(seq[i]));
+		bracketMatch(expression[i],strlen(expression[i]));
 	}
 }
- 
+
+void inputExpression(char expression[5][40])
+{
+	for (int i = 0; i < 5; i++)
+	{
+		scanf("%s",expression[i]);
+	}
+}
+
 int main()
 {
-    TestBracket();
+	char expression[5][40];
+	inputExpression(expression);
+    testBracketMatch(expression);
     return 0;
 }
