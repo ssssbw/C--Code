@@ -7,18 +7,15 @@ typedef struct Node
     char element;
     Node *lChild;
     Node *rChild;
-   // Node(char val):element(val), lChild(NULL), rChild(NULL){}
 }*BinTree;
 
 void createBinTree(BinTree &root)
 {
     char ch;
-    //scanf("%c", &ch); //用scanf第二棵树会有问题
     cin >> ch;
     if (ch == '#') root = NULL;
     else
     {
-        //root = new Node(ch);
         root = (BinTree)malloc(sizeof(Node));
         root->element = ch;
         createBinTree(root->lChild);

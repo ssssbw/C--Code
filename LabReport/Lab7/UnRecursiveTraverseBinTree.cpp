@@ -1,5 +1,7 @@
 #include <iostream>
+#include <cstdlib> 
 #include <stack>
+#include <queue>
 using namespace std;
 
 typedef struct Node
@@ -11,19 +13,104 @@ typedef struct Node
 
 void createBinTree(BinTree &root)
 {
+    stack<BinTree> s;
+    BinTree p = NULL, q = NULL;
     char ch;
-    scanf("%c", &ch);
-    if (ch == '#') root = NULL;
-    else
+    int flag = 0;
+    ch = getchar();
+    while(ch != '#')
     {
-        if(!(root = (BinTree)malloc(sizeof(BinTree)))) exit(0);
-        root->element = ch;
-        root->lChild = NULL;
-        root->rChild = NULL;
-        createBinTree(root->lChild);
-        createBinTree(root->rChild);
+        switch(ch)
+        {
+            case '(': s.push(p); flag = 1; break;
+            case ',': flag = 0; break;
+            case ')': s.pop();break;
+            default: 
+                p = (BinTree)malloc(sizeof(Node));
+                p->lChild = p->rChild = NULL;
+                p->element = ch;
+                if(!root)
+                {
+                    root = p;
+                }
+                else
+                {
+                   q = s.top();
+                   if (flag)
+                   {
+                       q->lChild = p;
+                   }
+                   else q->rChild = p;
+                }
+        }
+        ch = getchar();
     }
 } 
+
+void levelOrder(BinTree root)
+{
+    cout << "levelOrder: ";
+    if(root)
+    {
+        queue<BinTree> queue;
+        BinTree p = NULL, r = NULL;
+        p = root;
+        queue.push(p);
+        while(!queue.empty())
+        {
+        r =  queue.front();
+        queue.pop();
+        cout << r->element << " ";
+        if(r->lChild)
+            queue.push(r->lChild);
+        if(r->rChild)
+            queue.push(r->rChild);
+        }
+    }
+    cout << endl;
+}
+
+int binTreeWidth(BinTree root)
+{
+    if(!root)   return 0; //空树返回0
+
+    int width = 1, max = width;
+    int i = 1, max_i = i; //二叉树层次i, 最大宽度max_i所在层次i;
+    queue<BinTree> queue;
+    BinTree p = NULL;
+    queue.push(root);
+
+    while(!queue.empty())
+    {
+        p = queue.front();
+        queue.pop();
+        width--;
+        if (p->lChild)  queue.push(p->lChild);
+        if (p->rChild)  queue.push(p->rChild);
+        
+        if(width == 0)
+        {
+            width = queue.size();
+            i++;
+            if(width > max)
+            {
+                max = width;
+                max_i = i;
+            }
+        }
+    }
+    return max;
+}
+
+void locata_Elem(BinTree root, char elem, int floor, int *res)
+{
+    if (root)
+    {
+        if(root->element == elem) *res = floor;
+        locata_Elem(root->lChild, elem, floor + 1, res);
+        locata_Elem(root->rChild, elem, floor + 1, res);
+    }
+}
 
 void preOrderTraverse(BinTree root)
 {
@@ -107,10 +194,18 @@ void posOrderTraverse(BinTree root)
 
 int main()
 {
-    BinTree root;
+    BinTree root = NULL;
     createBinTree(root);
-    preOrderTraverse(root);
-    inOrderTraverse(root);
-    posOrderTraverse(root);
+    levelOrder(root);
+    cout << "二叉树宽度为: " << binTreeWidth(root) << endl;
+    char ch;
+    int floor = 1, res = -1;
+    cin >> ch;
+    locata_Elem(root, ch, floor, &res);
+    if(res <= 0) cout << "元素" << ch << "不在树上" << endl;
+    else cout << "元素" << ch << "所在层次为: " << res << endl;
+    // preOrderTraverse(root);
+    // inOrderTraverse(root);
+    // posOrderTraverse(root);
     return 0;
 }
