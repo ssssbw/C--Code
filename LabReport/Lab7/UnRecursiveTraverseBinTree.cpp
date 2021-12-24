@@ -10,7 +10,6 @@ typedef struct Node
     Node *lChild;
     Node *rChild;
 }*BinTree;
-
 void createBinTree(BinTree &root)
 {
     stack<BinTree> s;
